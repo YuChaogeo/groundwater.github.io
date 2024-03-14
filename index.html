@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>经纬度计算</title>
+    <title>计算两点的距离</title>
+    <style>
+        #container {height: 600px;width: 100%;}
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=nSxiPohfziUaCuONe4ViUP2N"></script>
 </head>
 <body>
-    <h1>请输入经纬度坐标</h1>
-    <form onsubmit="event.preventDefault(); calculateDistance()">
-        <label for="latitude1">纬度1：</label>
-        <input type="text" id="latitude1"  value="22"required>
-        <br>
-        <label for="longitude1">经度1：</label>
-        <input type="text" id="longitude1" value="22"required>
-        <br>
-        <label for="latitude2">纬度2：</label>
-        <input type="text" id="latitude2" value="22" required>
-        <br>
-        <label for="longitude2">经度2：</label>
-        <input type="text" id="longitude2"  value="23"required>
-        <br>
-        <button type="submit">计算距离</button>
-    </form>
-    <p id="result"></p>
-    <script src="calculate.js"></script>
+
+    <div id="container"></div>
+    <div id="coordinates"></div>
+    <div id="distance"></div>
+    <button id="clear-btn">清除点</button>
+    <script src="script.js"></script>
 </body>
 </html>

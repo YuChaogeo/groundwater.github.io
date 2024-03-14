@@ -28,13 +28,13 @@ function onMapClick(e) {
         map.addOverlay(marker1);
         clickedPoints.push(point);
         var dmsPoint1 = degreeToDMS(point.lng) + '   纬度： ' + degreeToDMS(point.lat);
-        document.getElementById('coordinates').innerText = "第一个点的坐标：\n经度: " + dmsPoint1;
+        document.getElementById('coordinates').innerText = "第一个点的坐标：经度: " + dmsPoint1;
     } else if (!marker2) {
         marker2 = new BMap.Marker(point);
         map.addOverlay(marker2);
         clickedPoints.push(point);
         var dmsPoint2 = degreeToDMS(point.lng) + '   纬度： ' + degreeToDMS(point.lat);
-        document.getElementById('coordinates').innerText += "\n\n第二个点的坐标：\n经度: " + dmsPoint2;
+        document.getElementById('coordinates').innerText += "\n第二个点的坐标：经度: " + dmsPoint2;
 
         // 计算两点间的球面距离
         var R = 6371;
@@ -48,7 +48,7 @@ function onMapClick(e) {
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         var distance = R * c;
 
-        document.getElementById('distance').innerText = "\n\n两个点的距离：" + distance.toFixed(2) + " km\n\n";
+        document.getElementById('distance').innerText = "\n岳岳    选择两个点的距离：" + distance.toFixed(2) + " km\n\n";
 
         // 在两点间绘制直线
         polyline = new BMap.Polyline([

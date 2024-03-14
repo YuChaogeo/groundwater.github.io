@@ -8,58 +8,16 @@ var navigationControl = new BMap.NavigationControl({
 });
 map.addControl(navigationControl);
 
-var marker1, marker2;
+var marker1, marker2, polyline;
 var clickedPoints = [];
-
-var polyline; // 新增变量，用于存储连线
-
-function onMapClick(e) {
-    var point = new BMap.Point(e.point.lng, e.point.lat);
-
-    if (!marker1) {
-        marker1 = new BMap.Marker(point);
-        map.addOverlay(marker1);
-        clickedPoints.push(point);
-        var lngDms = toDegreesMinutesSeconds(point.lng);
-        var latDms = toDegreesMinutesSeconds(point.lat);
-        document.getElementById('coordinates').innerText = "第一个点的   经度: " + lngDms + "   纬度： " + latDms;
-    } else if (!marker2) {
-        marker2 = new BMap.Marker(point);
-        map.addOverlay(marker2);
-        clickedPoints.push(point);
-        var lngDms = toDegreesMinutesSeconds(point.lng);
-        var latDms = toDegreesMinutesSeconds(point.lat);
-        document.getElementById('coordinates').innerText += "\n第二个点的   经度:" + lngDms + "  纬度：" + latDms;
-
-        // 计算两点间的球面距离
-        var R = 6371;
-        // ...（保留原有的距离计算和显示部分）
-
-        // 连接两个点的直线
-        polyline = new BMap.Polyline([
-            marker1.getPosition(),
-            marker2.getPosition()
-        ], {
-            strokeColor: "#ff0000", // 线条颜色
-            strokeWeight: 2,       // 线条宽度
-            strokeOpacity: 0.8     // 线条透明度
-        });
-        map.addOverlay(polyline); // 添加折线至地图
-
-        map.removeEventListener('click', onMapClick);
-    }
-}
-
-
-
 
 function degreeToDMS(deg) {
     var d = Math.floor(deg);
-    var minFloat = (deg-d)*60;
+    var minFloat = (deg - d) * 60;
     var m = Math.floor(minFloat);
-    var secFloat = (minFloat-m)*60;
-    var s = Math.round(secFloat*100)/100; // 保留两位小数
-    return {degree: d, minute: m, second: s};
+    var secFloat = (minFloat - m) * 60;
+    var s = Math.round(secFloat * 100) / 100; // 保留两位小数
+    return { degree: d, minute: m, second: s };
 }
 
 function onMapClick(e) {
@@ -69,7 +27,7 @@ function onMapClick(e) {
         marker1 = new BMap.Marker(point);
         map.addOverlay(marker1);
         clickedPoints.push(point);
-        var dmsPoint1 = degreeToDMS(point.lng) +'   纬度： ' + degreeToDMS(point.lat);
+        var dmsPoint1 = degreeToDMS(point.lng) + '   纬度： ' + degreeToDMS(point.lat);
         document.getElementById('coordinates').innerText = "第一个点的坐标：\n经度: " + dmsPoint1;
     } else if (!marker2) {
         marker2 = new BMap.Marker(point);
@@ -85,12 +43,23 @@ function onMapClick(e) {
         var lat1 = clickedPoints[0].lat * Math.PI / 180;
         var lat2 = clickedPoints[1].lat * Math.PI / 180;
 
-        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon/2) * Math.sin(dLon/2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         var distance = R * c;
 
-        document.getElementById('distance').innerText = "\n\n岳岳点击的\n\n  两个点的距离：" + distance.toFixed(2) + " km\n\n";
+        document.getElementById('distance').innerText = "\n\n两个点的距离：" + distance.toFixed(2) + " km\n\n";
+
+        // 在两点间绘制直线
+        polyline = new BMap.Polyline([
+            clickedPoints[0],
+            clickedPoints[1]
+        ], {
+            strokeColor: "#ff0000",
+            strokeWeight: 2,
+            strokeOpacity: 0.5
+        });
+        map.addOverlay(polyline);
 
         map.removeEventListener('click', onMapClick);
     }
@@ -101,7 +70,8 @@ map.addEventListener('click', onMapClick);
 document.getElementById('clear-btn').addEventListener('click', function() {
     marker1 && map.removeOverlay(marker1);
     marker2 && map.removeOverlay(marker2);
-    marker1 = marker2 = null;
+    polyline && map.removeOverlay(polyline);
+    marker1 = marker2 = polyline = null;
     clickedPoints = [];
     document.getElementById('coordinates').innerText = "";
     document.getElementById('distance').innerText = "";
@@ -118,5 +88,3 @@ function degreeToDMS(deg) {
     var s = ((deg - d) * 3600 - m * 60).toFixed(2);
     return sign + d + '° ' + m + '\' ' + s + '"';
 }
-
-

@@ -48,7 +48,7 @@ function onMapClick(e) {
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         var distance = R * c;
 
-        document.getElementById('distance').innerText = "\n岳岳    选择两个点的距离：" + distance.toFixed(2) + " km\n\n";
+        document.getElementById('distance').innerText = "岳岳    选择两个点的距离：" + distance.toFixed(2) + " km\n";
 
         // 在两点间绘制直线
         polyline = new BMap.Polyline([

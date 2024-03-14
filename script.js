@@ -1,5 +1,5 @@
 var map = new BMap.Map("container");
-map.centerAndZoom(new BMap.Point(116.404, 39.915), 15); // 初始化地图到北京
+map.centerAndZoom(new BMap.Point(116.32, 39.959), 15); // 初始化地图到北京
 
 // 添加缩放和平移控件
 var navigationControl = new BMap.NavigationControl({
@@ -10,6 +10,48 @@ map.addControl(navigationControl);
 
 var marker1, marker2;
 var clickedPoints = [];
+
+var polyline; // 新增变量，用于存储连线
+
+function onMapClick(e) {
+    var point = new BMap.Point(e.point.lng, e.point.lat);
+
+    if (!marker1) {
+        marker1 = new BMap.Marker(point);
+        map.addOverlay(marker1);
+        clickedPoints.push(point);
+        var lngDms = toDegreesMinutesSeconds(point.lng);
+        var latDms = toDegreesMinutesSeconds(point.lat);
+        document.getElementById('coordinates').innerText = "第一个点的   经度: " + lngDms + "   纬度： " + latDms;
+    } else if (!marker2) {
+        marker2 = new BMap.Marker(point);
+        map.addOverlay(marker2);
+        clickedPoints.push(point);
+        var lngDms = toDegreesMinutesSeconds(point.lng);
+        var latDms = toDegreesMinutesSeconds(point.lat);
+        document.getElementById('coordinates').innerText += "\n第二个点的   经度:" + lngDms + "  纬度：" + latDms;
+
+        // 计算两点间的球面距离
+        var R = 6371;
+        // ...（保留原有的距离计算和显示部分）
+
+        // 连接两个点的直线
+        polyline = new BMap.Polyline([
+            marker1.getPosition(),
+            marker2.getPosition()
+        ], {
+            strokeColor: "#ff0000", // 线条颜色
+            strokeWeight: 2,       // 线条宽度
+            strokeOpacity: 0.8     // 线条透明度
+        });
+        map.addOverlay(polyline); // 添加折线至地图
+
+        map.removeEventListener('click', onMapClick);
+    }
+}
+
+
+
 
 function degreeToDMS(deg) {
     var d = Math.floor(deg);
@@ -76,3 +118,5 @@ function degreeToDMS(deg) {
     var s = ((deg - d) * 3600 - m * 60).toFixed(2);
     return sign + d + '° ' + m + '\' ' + s + '"';
 }
+
+
